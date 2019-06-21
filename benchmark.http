@@ -1,0 +1,38 @@
+GET http://localhost:8080/profile/cats
+Accept: application/json
+
+###
+GET http://localhost:8080/cats
+Accept: application/json
+
+###
+POST http://localhost:8080/cats
+Content-Type: application/json
+Accept: application/json
+
+{
+  "name": "Tony",
+  "type": "Arabian Mau"
+}
+
+###
+POST http://localhost:8080/cats
+Content-Type: application/json
+Accept: application/json
+
+{
+  "name": "Grumpy cat",
+  "type": "Tadar Sauce"
+}
+
+###
+POST http://localhost:8080/cats
+Content-Type: application/json
+Accept: application/json
+
+{
+  "name": "Nyan cat",
+  "type": "Cat with Pop-Tart for a body, flying through space, and leaving a rainbow trail behind it"
+}
+
+###

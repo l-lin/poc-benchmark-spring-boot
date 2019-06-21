@@ -1,0 +1,37 @@
+version: '3'
+
+services:
+  prometheus:
+    image: prom/prometheus:v2.3.2
+    volumes:
+      - ./docker/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+  db:
+    image: postgres:9.6.9-alpine
+    environment:
+      POSTGRES_DB: benchmark
+    ports:
+      - 5433:5432
+    volumes:
+      - ./docker/postgres/dumps/:/docker-entrypoint-initdb.d/
+      - ./docker/postgres/postgres.conf:/etc/postgresql/postgresql.conf
+    command: postgres -c config_file=/etc/postgresql/postgresql.conf
+  grafana:
+    image: grafana/grafana:5.2.1
+    ports:
+      - 3000:3000
+    depends_on:
+      - prometheus
+    volumes:
+      - ./docker/grafana:/var/lib/grafana
+  app:
+    build: .
+    ports:
+      - 8080:8080
+      - 1100:1100
+    depends_on:
+      - db
+      - prometheus
+    volumes:
+      - ./docker/tools/wait-for-it.sh:/usr/local/bin/wait-for-it.sh
+    entrypoint: ["/usr/local/bin/wait-for-it.sh", "db:5432", "-t", "0", "--" , "/usr/bin/java", "-Dcom.sun.management.jmxremote", "-Dcom.sun.management.jmxremote.authenticate=false", "-Dcom.sun.management.jmxremote.ssl=false", "-Dcom.sun.management.jmxremote.port=1100", "-Dcom.sun.management.jmxremote.local.only=false", "-jar", "/opt/app/benchmark.jar"]
+    command: ["--spring.profiles.active=docker"]

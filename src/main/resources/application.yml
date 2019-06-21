@@ -1,0 +1,24 @@
+spring:
+  application:
+    name: benchmark
+  datasource:
+    url: jdbc:postgresql://${db.host}:${db.port}/benchmark?charSet=UTF-8&amp;ApplicationName=${spring.application.name}
+    username: postgres
+    hikari:
+      # Queries might be long...
+      connection-timeout: 300000
+  jpa:
+    hibernate:
+      ddl-auto: validate
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+  metrics:
+    web:
+      server:
+        auto-time-requests: true
+  endpoint:
+    prometheus:
+      enabled: true
